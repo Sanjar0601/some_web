@@ -40,5 +40,5 @@ app.post('/new', async (req, res) => {
 
 // Start
 sequelize.sync().then(() => {
-  app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+  app.listen(PORT, () => console.log(`Server running on http://13.53.133.7:${PORT}`));
 });
