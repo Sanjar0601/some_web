@@ -47,7 +47,7 @@ app.post('/new', async (req, res) => {
 
   // Вызов AWS Lambda через API Gateway
   try {
-    await axios.post('https://your-api-id.execute-api.amazonaws.com/default/notifyNewPost', {
+    await axios.post('https://ug9ep40cs3.execute-api.eu-north-1.amazonaws.com/default/send_notification', {
       id: post.id,
       title: post.title,
       content: post.content,
