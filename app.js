@@ -1,10 +1,12 @@
 const express = require('express');
 const { Sequelize } = require('sequelize');
+const axios = require('axios');
 const Post = require('./models/post');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.set('view engine', 'ejs');
@@ -18,27 +20,48 @@ const sequelize = new Sequelize({
 Post.initModel(sequelize);
 
 // Routes
+
+// Главная страница — список постов
 app.get('/', async (req, res) => {
   const posts = await Post.findAll({ order: [['createdAt', 'DESC']] });
   res.render('index', { posts });
 });
 
+// Просмотр отдельного поста
 app.get('/post/:id', async (req, res) => {
   const post = await Post.findByPk(req.params.id);
   res.render('post', { post });
 });
 
+// Страница создания поста
 app.get('/new', (req, res) => {
   res.render('new');
 });
 
+// Обработка формы создания поста
 app.post('/new', async (req, res) => {
   const { title, content } = req.body;
-  await Post.create({ title, content });
+
+  // Сохраняем в базу
+  const post = await Post.create({ title, content });
+
+  // Вызов AWS Lambda через API Gateway
+  try {
+    await axios.post('https://your-api-id.execute-api.amazonaws.com/default/notifyNewPost', {
+      id: post.id,
+      title: post.title,
+      content: post.content,
+      createdAt: post.createdAt
+    });
+    console.log('✅ Lambda вызвана успешно');
+  } catch (error) {
+    console.error('❌ Ошибка вызова Lambda:', error.message);
+  }
+
   res.redirect('/');
 });
 
-// Start
+// Запуск сервера
 sequelize.sync().then(() => {
   app.listen(PORT, () => console.log(`Server running on http://13.53.133.7`));
 });
