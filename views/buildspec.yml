@@ -1,0 +1,19 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 18
+    commands:
+      - echo "Установка зависимостей..."
+      - npm install
+  build:
+    commands:
+      - echo "Билдим проект (если нужно)"
+  post_build:
+    commands:
+      - echo "Деплой на EC2..."
+      - echo "$SSH_PRIVATE_KEY" > key.pem
+      - chmod 400 key.pem
+      - scp -o StrictHostKeyChecking=no -i key.pem -r * ec2-user@13.53.133.7:/home/ec2-user/some_web/
+      - ssh -o StrictHostKeyChecking=no -i key.pem ec2-user@13.53.133.7 'pm2 restart app || npm start &'
