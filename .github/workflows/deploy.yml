@@ -31,7 +31,7 @@ jobs:
         uses: webfactory/create-aws-codedeploy-deployment@v1
         with:
           application-name: some_web
-          deployment-group: test-blog
+          deployment-group: ec2-deployment-group
           deployment-config: CodeDeployDefault.AllAtOnce
           description: 'Automated deployment'
         env:
