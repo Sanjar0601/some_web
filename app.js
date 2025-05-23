@@ -63,5 +63,5 @@ app.post('/new', async (req, res) => {
 
 // Запуск сервера
 sequelize.sync().then(() => {
-  app.listen(PORT, () => console.log(`Server running on http://13.53.133.7`));
+  app.listen(PORT, () => console.log(`Server running on http://172.31.41.175`));
 });
